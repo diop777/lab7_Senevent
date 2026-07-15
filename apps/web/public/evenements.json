@@ -1,0 +1,7 @@
+[
+  { "id": 1, "titre": "Concert Youssou Ndour", "categorie": "concert", "lieu_nom": "Grand Théâtre", "prix": 5000, "date_debut": "2026-08-15T20:00:00.000Z", "image_url": "https://placehold.co/400x250/1a3a5c/fff?text=concert" },
+  { "id": 2, "titre": "Exposition d'art contemporain", "categorie": "expo", "lieu_nom": "IFAN Musée", "prix": 0, "date_debut": "2026-07-20T10:00:00.000Z", "image_url": "https://placehold.co/400x250/1a3a5c/fff?text=expo" },
+  { "id": 3, "titre": "Conférence Tech Dakar", "categorie": "conference", "lieu_nom": "UCAD Amphi", "prix": 2000, "date_debut": "2026-07-25T09:00:00.000Z", "image_url": "https://placehold.co/400x250/1a3a5c/fff?text=conference" },
+  { "id": 4, "titre": "Atelier React", "categorie": "atelier", "lieu_nom": "Coworking Dakar", "prix": 3000, "date_debut": "2026-07-30T14:00:00.000Z", "image_url": "https://placehold.co/400x250/1a3a5c/fff?text=atelier" },
+  { "id": 5, "titre": "Soutenance de Master", "categorie": "soutenance", "lieu_nom": "DMI FST UCAD", "prix": 0, "date_debut": "2026-08-01T09:00:00.000Z", "image_url": "https://placehold.co/400x250/1a3a5c/fff?text=soutenance" }
+]

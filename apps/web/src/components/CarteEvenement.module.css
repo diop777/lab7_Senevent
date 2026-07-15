@@ -1,0 +1,23 @@
+.carte {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+}
+.titre {
+  margin: 0 0 0.3rem 0;
+  color: #1a3a5c;
+}
+.info {
+  margin: 0.2rem 0;
+  color: #555;
+}
+.prix {
+  font-weight: bold;
+  color: #ea7d2b;
+}
+
+.lien {
+  text-decoration: none;
+  color: inherit;
+}
