@@ -1,0 +1,4 @@
+
+# Variables d'environnement locales
+.env.local
+.env*.local
