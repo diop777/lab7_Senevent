@@ -1,3 +1,4 @@
+import { supabase } from "./lib/supabase";
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { supabase } from "./lib/supabase";
@@ -28,19 +29,21 @@ const App = () => {
   }, []);
 
   const charger = async () => {
-    setChargement(true);
-    setErreur(null);
-    try {
-      const reponse = await fetch("/evenements.json");
-      if (!reponse.ok) throw new Error(`Erreur HTTP ${reponse.status}`);
-      const data = await reponse.json();
-      setEvenements(data);
-    } catch (e) {
-      setErreur(e.message);
-    } finally {
-      setChargement(false);
-    }
-  };
+  setChargement(true);
+  setErreur(null);
+
+  const { data, error } = await supabase
+    .from("evenements")
+    .select("*, profiles (nom)")
+    .order("date_debut", { ascending: true });
+
+  if (error) {
+    setErreur(error.message);
+  } else {
+    setEvenements(data);
+  }
+  setChargement(false);
+};
 
   useEffect(() => {
     charger();
