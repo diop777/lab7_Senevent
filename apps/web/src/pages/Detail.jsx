@@ -50,6 +50,8 @@ const Detail = ({ evenements, session }) => {
         className={styles.image}
       />
       <dl className={styles.infos}>
+        <dt>Organise par</dt>
+        <dd>{evenement.profiles ? evenement.profiles.nom : "Equipe SenEvent"}</dd>
         <dt>Lieu</dt><dd>{evenement.lieu_nom}</dd>
         <dt>Date</dt><dd>{date}</dd>
         <dt>Prix</dt><dd className={styles.prix}>{prix}</dd>
