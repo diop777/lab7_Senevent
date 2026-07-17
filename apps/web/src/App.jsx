@@ -1,4 +1,3 @@
-import { supabase } from "./lib/supabase";
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { supabase } from "./lib/supabase";
@@ -49,10 +48,6 @@ const App = () => {
     charger();
   }, []);
 
-  const ajouterEvenement = (nouvel) => {
-    setEvenements((precedents) => [nouvel, ...precedents]);
-  };
-
   return (
     <BrowserRouter>
       <NavBar session={session} />
@@ -70,11 +65,11 @@ const App = () => {
         />
         <Route
           path="/nouveau"
-          element={<NouvelEvenement onAjouter={ajouterEvenement} />}
+          element={<NouvelEvenement onAjoutReussi={charger} />}
         />
         <Route
           path="/evenement/:id"
-          element={<Detail evenements={evenements} />}
+          element={<Detail evenements={evenements} session={session} />}
         />
         <Route path="/auth" element={<Auth />} />
       </Routes>
