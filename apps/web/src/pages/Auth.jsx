@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
+import { sInscrire, seConnecter, getSupabase } from "@senevent/shared"; // <-- package partagé
 import styles from "./Auth.module.css";
 
 const Auth = () => {
@@ -18,24 +18,17 @@ const Auth = () => {
     setEnCours(true);
     try {
       if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password: motDePasse,
-        });
-        if (error) throw error;
+        const data = await sInscrire(email, motDePasse); // <-- inscription via package
 
+        // Créer la ligne profile associée
         if (data.user) {
-          const { error: e2 } = await supabase
+          const { error: e2 } = await getSupabase()
             .from("profiles")
             .insert({ id: data.user.id, nom, role: "PUBLIC" });
           if (e2) throw e2;
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password: motDePasse,
-        });
-        if (error) throw error;
+        await seConnecter(email, motDePasse); // <-- connexion via package
       }
       navigate("/");
     } catch (e) {
@@ -47,7 +40,7 @@ const Auth = () => {
 
   return (
     <form className={styles.form} onSubmit={soumettre}>
-      <h2>{mode === "signup" ? "Creer un compte" : "Se connecter"}</h2>
+      <h2>{mode === "signup" ? "Créer un compte" : "Se connecter"}</h2>
 
       {mode === "signup" && (
         <label className={styles.champ}>
@@ -85,7 +78,7 @@ const Auth = () => {
       {erreur && <p className={styles.erreur}>{erreur}</p>}
 
       <button type="submit" disabled={enCours} className={styles.bouton}>
-        {enCours ? "..." : mode === "signup" ? "Creer le compte" : "Se connecter"}
+        {enCours ? "..." : mode === "signup" ? "Créer le compte" : "Se connecter"}
       </button>
 
       <button
@@ -94,8 +87,8 @@ const Auth = () => {
         className={styles.basculer}
       >
         {mode === "signup"
-          ? "Deja un compte ? Se connecter"
-          : "Pas encore de compte ? Creer"}
+          ? "Déjà un compte ? Se connecter"
+          : "Pas encore de compte ? Créer"}
       </button>
     </form>
   );

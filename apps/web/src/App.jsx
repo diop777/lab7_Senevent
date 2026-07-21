@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { supabase } from "./lib/supabase";
+import { getEvenements, getSupabase } from "@senevent/shared"; // <-- import du package partagé
 import Accueil from "./pages/Accueil";
 import NouvelEvenement from "./pages/NouvelEvenement";
 import Detail from "./pages/Detail";
@@ -13,12 +13,13 @@ const App = () => {
   const [erreur, setErreur] = useState(null);
   const [session, setSession] = useState(null);
 
+  // Gestion de la session Supabase
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    getSupabase().auth.getSession().then(({ data }) => {
       setSession(data.session);
     });
 
-    const { data: subscription } = supabase.auth.onAuthStateChange(
+    const { data: subscription } = getSupabase().auth.onAuthStateChange(
       (_event, newSession) => {
         setSession(newSession);
       }
@@ -27,22 +28,19 @@ const App = () => {
     return () => subscription.subscription.unsubscribe();
   }, []);
 
+  // Charger les événements depuis Supabase
   const charger = async () => {
-  setChargement(true);
-  setErreur(null);
-
-  const { data, error } = await supabase
-    .from("evenements")
-    .select("*, profiles (nom)")
-    .order("date_debut", { ascending: true });
-
-  if (error) {
-    setErreur(error.message);
-  } else {
-    setEvenements(data);
-  }
-  setChargement(false);
-};
+    setChargement(true);
+    setErreur(null);
+    try {
+      const data = await getEvenements(); // <-- appel partagé
+      setEvenements(data);
+    } catch (e) {
+      setErreur(e.message);
+    } finally {
+      setChargement(false);
+    }
+  };
 
   useEffect(() => {
     charger();

@@ -1,5 +1,6 @@
 import BoutonInscription from "../components/BoutonInscription";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { supprimerEvenement } from "@senevent/shared"; // <-- package partagé
 import styles from "./Detail.module.css";
 
 const Detail = ({ evenements, session }) => {
@@ -19,19 +20,16 @@ const Detail = ({ evenements, session }) => {
 
   const prix = evenement.prix === 0 ? "Gratuit" : `${evenement.prix} FCFA`;
   const date = new Date(evenement.date_debut).toLocaleString("fr-FR");
+
   const supprimer = async () => {
-    const confirme = window.confirm("Supprimer cet evenement ?");
+    const confirme = window.confirm("Supprimer cet événement ?");
     if (!confirme) return;
 
-    const { error } = await supabase
-      .from("evenements")
-      .delete()
-      .eq("id", evenement.id);
-
-    if (error) {
-      alert("Erreur : " + error.message);
-    } else {
+    try {
+      await supprimerEvenement(evenement.id); // <-- appel partagé
       navigate("/");
+    } catch (e) {
+      alert("Erreur : " + e.message);
     }
   };
 
@@ -50,7 +48,7 @@ const Detail = ({ evenements, session }) => {
         className={styles.image}
       />
       <dl className={styles.infos}>
-        <dt>Organise par</dt>
+        <dt>Organisé par</dt>
         <dd>{evenement.profiles ? evenement.profiles.nom : "Equipe SenEvent"}</dd>
         <dt>Lieu</dt><dd>{evenement.lieu_nom}</dd>
         <dt>Date</dt><dd>{date}</dd>
@@ -59,7 +57,7 @@ const Detail = ({ evenements, session }) => {
       <BoutonInscription evenementId={evenement.id} session={session} />
       {session && session.user.id === evenement.organisateur_id && (
         <button onClick={supprimer} className={styles.supprimer}>
-          Supprimer cet evenement
+          Supprimer cet événement
         </button>
       )}
     </div>
