@@ -1,16 +1,23 @@
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import {
+  createClient,
+  SupabaseClient,
+  SupabaseClientOptions,
+} from "@supabase/supabase-js";
 
 let client: SupabaseClient | null = null;
 
-// Initialise le client une seule fois
-export function initSupabase(url: string, anonKey: string): SupabaseClient {
+export function initSupabase(
+  url: string,
+  anonKey: string,
+  options?: SupabaseClientOptions<"public">
+): SupabaseClient {
   if (!client) {
-    client = createClient(url, anonKey);
+    client = createClient(url, anonKey, options);
   }
   return client;
 }
 
-// Récupère le client déjà initialisé
+// getSupabase() reste inchange
 export function getSupabase(): SupabaseClient {
   if (!client) {
     throw new Error(
