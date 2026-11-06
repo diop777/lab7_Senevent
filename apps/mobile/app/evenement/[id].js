@@ -4,6 +4,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { getEvenements } from "@senevent/shared";
+import BoutonInscription from "../../components/BoutonInscription";
 
 export default function Detail() {
   const { id } = useLocalSearchParams();
@@ -54,6 +55,8 @@ export default function Detail() {
           <Text style={styles.label}>Prix</Text>
           <Text style={styles.prix}>{prix}</Text>
         </View>
+
+        <BoutonInscription evenementId={evenement.id} />
       </View>
     </ScrollView>
   );
