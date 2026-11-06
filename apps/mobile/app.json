@@ -17,9 +17,10 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "sn.ucad.senevent.equipe1",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1a3a5c"
       },
       "edgeToEdgeEnabled": true
     },
@@ -29,6 +30,12 @@
     "plugins": [
       "expo-status-bar",
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7c1e5b29-16f3-42e5-bc09-90d64e43cf91"
+      }
+    },
+    "owner": "mansour-ndiaye"
   }
 }
