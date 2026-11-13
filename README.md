@@ -8,4 +8,4 @@ Projet du cours DAWM, Master 1 RETEL, DMI/FST/UCAD.
 Voir le dossier `equipe/`.
 
 ## Devise de l'equipe
-Devise : (a definir)
+Devise : Dakar dans la poche
