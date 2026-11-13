@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rapport TP Lab 11 - DAWM M1 RETEL - Déploiement Web sur Vercel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+
+    :root {
+      --primary: #1a3a5c;
+      --secondary: #ea7d2b;
+      --accent: #0070f3;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background-color: var(--bg);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 20mm;
+      margin: 10mm auto;
+      background: var(--surface);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+
+    @media print {
+      body { background: transparent; }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        width: 100%;
+        min-height: 100vh;
+        padding: 15mm 20mm;
+      }
+      .no-print { display: none; }
+    }
+
+    /* PAGE DE GARDE */
+    .cover-page {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 257mm;
+      border: 2px solid var(--primary);
+      padding: 15mm;
+      background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    }
+
+    .cover-header {
+      text-align: center;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 12px;
+    }
+    .cover-header h3 { font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .cover-header h4 { font-size: 11px; font-weight: 600; color: #475569; margin-top: 3px; }
+    .cover-header p { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+
+    .cover-title-box {
+      text-align: center;
+      padding: 30px 15px;
+      margin: 20px 0;
+      background: #ffffff;
+      border-top: 4px solid var(--accent);
+      border-bottom: 4px solid var(--primary);
+      box-shadow: 0 4px 15px rgba(26, 58, 92, 0.06);
+    }
+    .badge-lab {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .cover-title-box h1 {
+      font-size: 24px;
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .cover-title-box h2 {
+      font-size: 14px;
+      color: #334155;
+      font-weight: 500;
+    }
+    .cover-tag {
+      margin-top: 15px;
+      font-family: 'Fira Code', monospace;
+      font-size: 12px;
+      color: var(--primary);
+      background: #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .cover-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .meta-card {
+      background: #f1f5f9;
+      border-left: 4px solid var(--primary);
+      padding: 12px 16px;
+      border-radius: 0 6px 6px 0;
+    }
+    .meta-card.right {
+      border-left-color: var(--accent);
+    }
+    .meta-card h5 {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .meta-card p {
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 1.4;
+    }
+
+    .cover-footer {
+      text-align: center;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* TYPOGRAPHIE ET SECTIONS */
+    h2.section-title {
+      font-size: 16px;
+      color: var(--primary);
+      border-left: 4px solid var(--accent);
+      padding-left: 10px;
+      margin: 20px 0 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    p { margin-bottom: 10px; }
+    ul { margin-left: 20px; margin-bottom: 12px; }
+    li { margin-bottom: 4px; }
+
+    /* CADRES TERMINAL / CAPTURES */
+    .terminal-window {
+      background: var(--code-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 14px 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border: 1px solid #1e293b;
+    }
+    .terminal-bar {
+      background: #1e293b;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+    .terminal-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-left: 10px;
+      font-weight: 500;
+    }
+    .terminal-body {
+      padding: 12px 14px;
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: #e2e8f0;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .t-cmd { color: #38bdf8; font-weight: 600; }
+    .t-out { color: #cbd5e1; }
+    .t-success { color: #4ade80; font-weight: 600; }
+    .t-commit { color: #facc15; }
+
+    /* BROWSER MOCKUP */
+    .browser-mockup {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      margin: 15px 0;
+    }
+    .browser-bar {
+      background: #f1f5f9;
+      padding: 8px 12px;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .browser-url {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 3px 14px;
+      font-size: 11px;
+      color: #0f172a;
+      flex: 1;
+      font-family: 'Fira Code', monospace;
+    }
+    .browser-content {
+      padding: 15px;
+      background: #f8fafc;
+    }
+    .web-navbar {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .web-brand { font-weight: 800; font-size: 14px; color: #fff; }
+    .web-navlinks { display: flex; gap: 15px; font-size: 11px; }
+
+    .web-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .web-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 11px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      background: #dcfce7;
+      color: #15803d;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1 : PAGE DE GARDE OFFICIELLE -->
+  <div class="page">
+    <div class="cover-page">
+      <div class="cover-header">
+        <h3>République du Sénégal</h3>
+        <h4>Université Cheikh Anta Diop de Dakar (UCAD)</h4>
+        <p>Faculté des Sciences et Techniques (FST) • Département de Mathématiques et Informatique (DMI)</p>
+        <p style="margin-top: 2px; font-weight: 600; color: #1a3a5c;">Master 1 Réseaux & Télécommunications (RETEL) — 2025-2026</p>
+      </div>
+
+      <div class="cover-title-box">
+        <span class="badge-lab">Rapport de Travaux Pratiques</span>
+        <h1>LAB 11 : DÉPLOIEMENT WEB SUR VERCEL</h1>
+        <h2>Application SenEvent — « De localhost:5173 à une adresse que tout Dakar peut ouvrir »</h2>
+        <div style="margin-top: 15px;">
+          <span class="cover-tag">Tag de sortie : v1.0-web</span>
+          <span class="cover-tag" style="margin-left: 6px;">Branche : feature/lab11-vercel</span>
+        </div>
+      </div>
+
+      <div class="cover-meta">
+        <div class="meta-card">
+          <h5>Présenté par l'étudiant / Équipe :</h5>
+          <p><strong>Ousseynou DIOP</strong> (Git Master)</p>
+          <p style="font-weight: 400; font-size: 11px; color: #64748b; margin-top: 2px;">
+            Équipe SenEvent : Atou (Propriétaire Vercel), Mansour NDIAYE, Khady, Ousseynou DIOP
+          </p>
+          <p style="font-weight: 500; font-size: 11px; margin-top: 4px;">M1 RETEL — DMI / UCAD</p>
+        </div>
+        <div class="meta-card right">
+          <h5>Sous la supervision de :</h5>
+          <p><strong>Dr. El Hadji Bassirou TOURE</strong></p>
+          <p style="font-weight: 400; font-size: 11px; color: #64748b; margin-top: 2px;">
+            Enseignant-Chercheur (DMI / FST / UCAD)
+          </p>
+          <p style="font-weight: 500; font-size: 11px; margin-top: 4px;">Cours DAWM (Dév. Applications Web & Mobile)</p>
+        </div>
+      </div>
+
+      <div class="cover-footer">
+        <p>Déploiement Continu Vercel • Single Page Application (SPA) • Réécriture vercel.json • Supabase Auth</p>
+        <p style="margin-top: 4px; font-weight: 600;">Dakar, Sénégal — Novembre 2026</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2 : INTRODUCTION, ARCHITECTURE ET PREUVES DE CONTRÔLE -->
+  <div class="page">
+    <h2 class="section-title">1. Introduction & Objectifs Pédagogiques</h2>
+    <p>
+      L'application web SenEvent était confinée à l'environnement local de développement (<code>localhost:5173</code>). L'objectif du <strong>Lab 11</strong> est de déployer l'application sur l'infrastructure Cloud de <strong>Vercel</strong> en mode <strong>Déploiement Continu</strong> : chaque push sur une Pull Request génère une URL de prévisualisation (Preview), et chaque fusion sur <code>main</code> redéploie automatiquement la version de production accessible mondialement.
+    </p>
+
+    <!-- BROWSER MOCKUP VERCEL -->
+    <div class="browser-mockup">
+      <div class="browser-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <div class="browser-url">🔒 https://senevent-equipe-1.vercel.app/evenements</div>
+      </div>
+      <div class="browser-content">
+        <div class="web-navbar">
+          <div class="web-brand">SenEvent Dakar</div>
+          <div class="web-navlinks">
+            <span>Catalogue</span>
+            <span>+ Créer</span>
+            <span>Connexion</span>
+          </div>
+        </div>
+        <div class="web-card-grid">
+          <div class="web-card">
+            <span style="background: #ea7d2b; color: #fff; font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">CONCERT</span>
+            <div style="font-weight: 700; color: #1a3a5c; margin-top: 4px;">Concert Live Dakar 2026</div>
+            <div style="font-size: 10px; color: #64748b;">Grand Théâtre National</div>
+            <div style="color: #ea7d2b; font-weight: 700; font-size: 11px; margin-top: 4px;">5 000 FCFA</div>
+          </div>
+          <div class="web-card">
+            <span style="background: #3b82f6; color: #fff; font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">EXPO</span>
+            <div style="font-weight: 700; color: #1a3a5c; margin-top: 4px;">Biennale d'Art Dak'Art</div>
+            <div style="font-size: 10px; color: #64748b;">Musée Théodore Monod</div>
+            <div style="color: #ea7d2b; font-weight: 700; font-size: 11px; margin-top: 4px;">Gratuit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">2. Résolution des Deux Défis Majeurs du Monorepo</h2>
+    
+    <h3 style="font-size: 12px; color: #1a3a5c; margin: 8px 0 4px;">A. Un seul package-lock.json à la racine</h3>
+    <p>
+      Si Vercel détecte un <code>package-lock.json</code> dans <code>apps/web/</code>, il tente d'installer le projet de manière isolée et échoue sur une erreur 404 en cherchant <code>@senevent/shared</code> sur le registre npm public. Le nettoyage strict garantit la résolution des workspaces à la racine.
+    </p>
+
+    <h3 style="font-size: 12px; color: #1a3a5c; margin: 8px 0 4px;">B. Correction du piège des routes profondes (anti-404 SPA)</h3>
+    <p>
+      Dans une SPA, le serveur ne possède que <code>index.html</code>. Une actualisation directe (F5) sur <code>/evenement/3</code> renvoie 404 par défaut. Nous avons créé <code>apps/web/vercel.json</code> avec une règle de réécriture :
+    </p>
+    <div style="background: #0f172a; color: #e2e8f0; font-family: 'Fira Code', monospace; padding: 8px 12px; border-radius: 6px; font-size: 10px; margin-bottom: 10px;">
+      { "rewrites": [ { "source": "/(.*)", "destination": "/index.html" } ] }
+    </div>
+
+    <h2 class="section-title">3. Commandes de Contrôle Côté Enseignant</h2>
+    <div class="terminal-window">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">bash — Contrôle d'évaluation Lab 11 (Vérifications Git &amp; Curl)</span>
+      </div>
+      <div class="terminal-body">
+        <span class="t-cmd">$ git ls-files | grep -c "package-lock\.json"</span><br>
+        <span class="t-success">1   # Uniquement à la racine du monorepo</span><br><br>
+        <span class="t-cmd">$ git ls-files | grep -c "\.env"</span><br>
+        <span class="t-success">0   # Zéro fuite de fichier secret dans Git</span><br><br>
+        <span class="t-cmd">$ curl -s -o /dev/null -w "%{http_code}\n" https://senevent-equipe-1.vercel.app/evenement/1</span><br>
+        <span class="t-success">200 # Réécriture vercel.json opérationnelle (pas de 404)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3 : COMMITS, RECETTE ET CHECKLIST -->
+  <div class="page">
+    <h2 class="section-title">4. Historique des Commits du Lab 11</h2>
+    <div class="terminal-window">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">git log v0.10-mobile-crud..v1.0-web --oneline</span>
+      </div>
+      <div class="terminal-body">
+        <span class="t-commit">41e44cf</span> <span class="t-out">retire .env du suivi git et mise a jour .gitignore</span><br>
+        <span class="t-commit">c290f69</span> <span class="t-out">documentation deploiement Vercel et workflow CI de build</span><br>
+        <span class="t-commit">d3cddc2</span> <span class="t-out">reecriture SPA : toute route renvoie index.html</span><br>
+        <span class="t-commit">3e35b0c</span> <span class="t-out">un seul package-lock a la racine du monorepo</span>
+      </div>
+    </div>
+
+    <h2 class="section-title">5. Grille de Recette en Conditions Réelles (Téléphone 4G)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Action testée</th>
+          <th>Résultat attendu</th>
+          <th>Constat</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Ouvrir l'adresse de production Vercel</td>
+          <td>Catalogue affiché en quelques secondes</td>
+          <td><span class="status-badge">OK</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Ouvrir un événement et appuyer sur F5</td>
+          <td>La fiche reste affichée sans 404</td>
+          <td><span class="status-badge">OK</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Coller l'URL d'une fiche dans un nouvel onglet</td>
+          <td>La fiche s'affiche directement</td>
+          <td><span class="status-badge">OK</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Créer un compte et confirmer l'e-mail</td>
+          <td>Le lien ramène vers l'URL de production Vercel</td>
+          <td><span class="status-badge">OK</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Se connecter et créer un événement</td>
+          <td>L'événement apparaît dans la liste</td>
+          <td><span class="status-badge">OK</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Recharger la page du catalogue</td>
+          <td>L'événement est toujours présent (persistance)</td>
+          <td><span class="status-badge">OK</span></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>S'inscrire à un événement</td>
+          <td>Le bouton passe à "Se désinscrire"</td>
+          <td><span class="status-badge">OK</span></td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Ouvrir l'application mobile Expo Go</td>
+          <td>L'événement créé sur le Web y apparaît instantanément</td>
+          <td><span class="status-badge">OK</span></td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>Tenter de supprimer un événement avec un autre compte</td>
+          <td>Bouton absent ; refus RLS Supabase si forcé</td>
+          <td><span class="status-badge">OK</span></td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>Chercher service_role dans le code source (F12)</td>
+          <td>Aucun résultat (sécurité des clés garantie)</td>
+          <td><span class="status-badge">OK</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="section-title">6. Checklist de Validation du Lab 11</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Critère d'évaluation du Lab 11</th>
+          <th>Vérification technique</th>
+          <th>Résultat</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Build Vite en local réussi</td>
+          <td><code>npm run build --workspace apps/web</code> (<code>dist/</code> généré et ignoré)</td>
+          <td><span class="status-badge">CONFORME</span></td>
+        </tr>
+        <tr>
+          <td>Un seul package-lock.json</td>
+          <td>Nettoyage des locks imbriqués dans <code>apps/web</code> et <code>packages/shared</code></td>
+          <td><span class="status-badge">CONFORME</span></td>
+        </tr>
+        <tr>
+          <td>Réécriture SPA Vercel</td>
+          <td><code>apps/web/vercel.json</code> avec redirection <code>/(.*)</code> vers <code>/index.html</code></td>
+          <td><span class="status-badge">CONFORME</span></td>
+        </tr>
+        <tr>
+          <td>Variables Supabase Cloud</td>
+          <td><code>VITE_SUPABASE_URL</code> et <code>VITE_SUPABASE_ANON_KEY</code> définies</td>
+          <td><span class="status-badge">CONFORME</span></td>
+        </tr>
+        <tr>
+          <td>URLs d'authentification Supabase</td>
+          <td>Site URL et Redirect URLs configurées pour l'adresse de production</td>
+          <td><span class="status-badge">CONFORME</span></td>
+        </tr>
+        <tr>
+          <td>Tag Git officiel posé sur main</td>
+          <td><code>git tag -a v1.0-web</code> poussé sur GitHub</td>
+          <td><span class="status-badge">CONFORME</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

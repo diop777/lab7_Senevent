@@ -1,28 +1,55 @@
-# Rapport de TP — Lab 11 : Déploiement Web sur Vercel
+```
+========================================================================================
+                                RÉPUBLIQUE DU SÉNÉGAL
+                     UNIVERSITÉ CHEIKH ANTA DIOP DE DAKAR (UCAD)
+                     FACULTÉ DES SCIENCES ET TECHNIQUES (FST)
+              DÉPARTEMENT DE MATHÉMATIQUES ET INFORMATIQUE (DMI)
+             MASTER 1 RÉSEAUX ET TÉLÉCOMMUNICATIONS (M1 RETEL)
+                            ANNÉE : 2025 – 2026
 
-- **Formation** : Master 1 Réseaux & Télécommunications (M1 RETEL)
-- **Module** : DAWM — Développement d'Applications Web & Mobile (2025–2026)
-- **Enseignant** : Dr. El Hadji Bassirou TOURE (DMI / FST / UCAD)
-- **Projet** : SenEvent — Application d'événements à Dakar
-- **Tag Git validé** : `v1.0-web`
-- **Branche** : `feature/lab11-vercel` fusionnée dans `main`
-- **URL de Production** : `https://senevent-equipe-1.vercel.app`
+      MODULE : DAWM (DÉVELOPPEMENT D'APPLICATIONS WEB & MOBILE)
+      ENSEIGNANT : DR. EL HADJI BASSIROU TOURE (DMI / FST / UCAD)
+========================================================================================
+
+                            RAPPORT DE TRAVAUX PRATIQUES
+                                      LAB 11
+                            DÉPLOIEMENT WEB SUR VERCEL
+               « De localhost:5173 à une adresse que tout Dakar peut ouvrir »
+
+      PROJET : SenEvent (Plateforme Événementielle Partagée Monorepo)
+      TAG DE VALIDATION : v1.0-web
+      BRANCHE GIT : feature/lab11-vercel (fusionnée dans main)
+      URL DE PRODUCTION : https://senevent-equipe-1.vercel.app
+
+----------------------------------------------------------------------------------------
+  PRÉSENTÉ PAR :
+    • Ousseynou DIOP (Étudiant M1 RETEL — Auteur des commits & Git Master)
+    • Équipe SenEvent : Atou (Propriétaire Vercel), Mansour NDIAYE, Khady, Ousseynou DIOP
+
+  SOUS LA SUPERVISION DE :
+    • Dr. El Hadji Bassirou TOURE (Enseignant-Chercheur, DMI / UCAD)
+
+  DATE DE REMISE : NOVEMBRE 2026
+========================================================================================
+```
 
 ---
 
-## 1. Objectifs du Lab 11
+# 1. Introduction et Objectifs Pédagogiques
 
-Le Lab 11 réalise la transition de l'application Web de l'environnement de développement local (`localhost:5173`) vers la production publique :
-1. **Build de production Vite** : Maîtrise de la compilation et minification (`dist/`) opposée au serveur de développement `npm run dev`.
-2. **Nettoyage strict du monorepo** : Élimination de tout `package-lock.json` imbriqué afin de garantir que Vercel résolve correctement le lien workspace vers `@senevent/shared`.
-3. **Protection des secrets** : Assurer l'absence totale de fichiers `.env` ou de clés sensibles dans l'historique et l'index Git.
-4. **Correction de l'erreur 404 sur les routes profondes (SPA)** : Configuration de la réécriture Vercel (`vercel.json`) pour diriger toute requête inexistante vers `index.html`.
-5. **Configuration Supabase Auth en Production** : Ajustement du `Site URL` et des `Redirect URLs` dans la console Supabase pour valider les tokens d'authentification et confirmations d'e-mails.
-6. **Recette complète en 4G** : Exécution du plan de test méthodique en 10 points.
+Le **Lab 11** réalise la transition fondamentale entre le développement local sur machine d'apprentissage (`localhost:5173`) et la mise en ligne publique d'une **Single Page Application (SPA)** de niveau industriel.
+
+Les compétences et acquis majeurs validés sont :
+1. **Distinguer le serveur de développement du build de production** : `npm run dev` (chargement dynamique à chaud) contre `npm run build` (minification et bundling optimisé dans `dist/`).
+2. **Nettoyage strict de l'arborescence Monorepo** : Suppression des verrous `package-lock.json` imbriqués pour que les workspaces npm résolvent le package partagé `@senevent/shared` sur les serveurs de Vercel.
+3. **Sécurisation absolue des clés et secrets** : Interdiction définitive de versionner des fichiers `.env` dans Git (retrait de `apps/mobile/.env` de l'index et renforcement de `.gitignore`).
+4. **Résolution du piège des routes profondes d'une SPA (erreur 404)** : Mise en place d'une réécriture d'URL dans `apps/web/vercel.json` vers `/index.html`.
+5. **Déploiement Continu (CI/CD)** : Chaque Pull Request reçoit une URL de prévisualisation isolée, et chaque fusion sur `main` met la production à jour.
+6. **Recette complète en 4G** : Exécution d'un plan de test en 10 points sur smartphone déconnecté de tout ordinateur.
 
 ---
 
-## 2. Déploiement Continu (CI/CD) et Flux d'Architecture
+# 2. Architecture de Déploiement Continu
 
 ```mermaid
 sequenceDiagram
@@ -53,31 +80,32 @@ sequenceDiagram
 
 ---
 
-## 3. Travaux Réalisés et Fichiers Modifiés
+# 3. Travaux Réalisés et Fichiers Modifiés
 
-### 3.1. Étape 1 : Build de Production en Local & Nettoyage Monorepo
-- Compilation vérifiée avec succès :
+### Étape 1 : Le build de production en local & Nettoyage du lock
+- **Compilation locale validée** :
   ```bash
   $ npm run build --workspace apps/web
   vite v8.1.5 building client environment for production...
-  ✓ 88 modules transformed.
   dist/index.html                   0.46 kB
   dist/assets/index-DycJx8BW.css    5.60 kB
   dist/assets/index-B2ocyiee.js   477.51 kB
   ✓ built in 608ms
   ```
-- Suppression des fichiers `package-lock.json` imbriqués (`apps/web/package-lock.json` et `packages/shared/package-lock.json`) pour laisser un fichier unique à la racine.
-- Vérification que `apps/web/dist` est bien ignoré par `.gitignore`.
+- **Suppression des locks parasites** :
+  - `git rm apps/web/package-lock.json`
+  - `git rm packages/shared/package-lock.json`
+  - Régénération de l'unique `package-lock.json` à la racine via `npm install`.
 
-### 3.2. Étape 2 : Sécurisation des Variables d'Environnement
+### Étape 2 : Sécurisation des secrets
 - Retrait de `apps/mobile/.env` de l'index Git (`git rm --cached`).
-- Normalisation du fichier `.gitignore` à la racine pour interdire définitivement `.env*`.
-- Déclaration des variables dans Vercel (Production & Preview) :
+- Normalisation du fichier `.gitignore` pour interdire toute variante `.env*`.
+- Configuration des variables d'environnement dans le tableau de bord Vercel (Production et Preview) :
   - `VITE_SUPABASE_URL`
   - `VITE_SUPABASE_ANON_KEY`
 
-### 3.3. Étape 3 : Réécriture SPA anti-404
-- Création de `apps/web/vercel.json` :
+### Étape 3 : Réécriture SPA anti-404
+- **Fichier créé** : `apps/web/vercel.json`
   ```json
   {
     "rewrites": [
@@ -85,33 +113,32 @@ sequenceDiagram
     ]
   }
   ```
-  *Explication technique :* Lorsqu'un utilisateur actualise la page sur `/evenement/3` ou ouvre un lien direct, le serveur CDN Vercel réécrit l'URL vers `index.html`. React Router reprend alors la main dans le navigateur sans renvoyer d'erreur 404 HTTP.
+  *Explication :* Lorsqu'un utilisateur actualise une URL comme `/evenement/3`, le serveur Vercel renvoie `index.html` au lieu d'une erreur 404, permettant à React Router de charger la bonne fiche dans le navigateur.
 
-### 3.4. Étape 4 : Configuration Supabase Auth
-- Définition du `Site URL` : `https://senevent-equipe-1.vercel.app`
-- Ajout des `Redirect URLs` autorisées :
+### Étape 4 : Configuration des URLs Supabase Auth
+- **Site URL** : `https://senevent-equipe-1.vercel.app`
+- **Redirect URLs** :
   - `https://senevent-equipe-1.vercel.app/**`
-  - `http://localhost:5173/**`
+  - `http://localhost:5173/**` (pour le maintien du développement local)
 
-### 3.5. Étape 5 : Workflow d'Intégration Continue (Bonus)
-- Ajout de `.github/workflows/build-web.yml` exécutant `npm ci` et `npm run build --workspace apps/web` sur chaque Pull Request vers `main`.
+### Étape 5 : Documentation et CI
+- Mise à jour de la section `## En ligne` du `README.md`.
+- Ajout du workflow GitHub Actions `.github/workflows/build-web.yml` (Bonus).
 
 ---
 
-## 4. Captures et Preuves de Validation Côté Enseignant
-
-### 4.1. Vérifications Terminal et Git
+# 4. Captures et Preuves de Contrôle Côté Enseignant
 
 ```bash
-# 1. Vérification du verrouillage unique à la racine
+# 1. Vérification du verrou unique à la racine
 $ git ls-files | grep -c "package-lock.json"
 1
 
-# 2. Vérification de l'absence totale de secrets .env dans Git
+# 2. Vérification de l'absence totale de secrets dans Git
 $ git ls-files | grep -c "\.env"
 0
 
-# 3. Présence et contenu de la réécriture SPA Vercel
+# 3. Contenu de la réécriture SPA
 $ cat apps/web/vercel.json
 {
   "rewrites": [
@@ -126,22 +153,38 @@ c290f69 documentation deploiement Vercel et workflow CI de build
 d3cddc2 reecriture SPA : toute route renvoie index.html
 3e35b0c un seul package-lock a la racine du monorepo
 
-# 5. Test curl anti-404 sur route profonde
+# 5. Test curl anti-404 sans navigateur
 $ curl -s -o /dev/null -w "%{http_code}\n" https://senevent-equipe-1.vercel.app/evenement/1
 200
 ```
 
-### 4.2. Grille de Recette en Conditions Réelles (Téléphone 4G)
+---
+
+# 5. Grille de Recette en Conditions Réelles (Téléphone 4G)
 
 | # | Action testée | Résultat attendu | Constat |
 |---|---|---|:---:|
-| 1 | Ouvrir l'adresse de production | Catalogue affiché immédiatement | **OK** |
-| 2 | Ouvrir un événement et faire F5 | La fiche reste affichée sans 404 | **OK** |
-| 3 | Coller l'URL d'une fiche dans un nouvel onglet | Affichage direct | **OK** |
-| 4 | Création de compte & confirmation e-mail | Redirection vers domaine Vercel | **OK** |
-| 5 | Créer un événement en étant connecté | Ajout visible dans le catalogue | **OK** |
-| 6 | Recharger la page du catalogue | L'événement persiste en base | **OK** |
-| 7 | Inscription à un événement | Bascule vers "Se désinscrire" | **OK** |
-| 8 | Ouverture de l'app mobile Expo Go | Événement créé sur le web présent | **OK** |
-| 9 | Tentative de suppression non autorisée | Bouton masqué / RLS bloque | **OK** |
+| 1 | Ouvrir l'adresse de production Vercel | Catalogue affiché en quelques secondes | **OK** |
+| 2 | Ouvrir un événement et appuyer sur F5 | La fiche reste affichée sans 404 | **OK** |
+| 3 | Coller l'URL d'une fiche dans un nouvel onglet | La fiche s'affiche directement | **OK** |
+| 4 | Créer un compte et confirmer l'e-mail | Le lien ramène vers l'adresse Vercel | **OK** |
+| 5 | Se connecter et créer un événement | L'événement apparaît dans la liste | **OK** |
+| 6 | Recharger la page du catalogue | L'événement est toujours présent | **OK** |
+| 7 | S'inscrire à un événement | Le bouton passe à « Se désinscrire » | **OK** |
+| 8 | Ouvrir l'app mobile Expo Go | L'événement créé sur le Web y apparaît | **OK** |
+| 9 | Tentative de suppression avec un autre compte | Bouton absent ; refus RLS si forcé | **OK** |
 | 10| Inspection Sources F12 | Clé `service_role` absente | **OK** |
+
+---
+
+# 6. Checklist de Validation du Lab 11
+
+| Point de contrôle exigé | État | Justification technique |
+|---|:---:|---|
+| Build Vite en local réussi | **Validé** | `dist/` généré avec succès en 608ms |
+| Un seul `package-lock.json` | **Validé** | Locks imbriqués supprimés, racine conservée |
+| Réécriture SPA Vercel | **Validé** | `apps/web/vercel.json` présent avec règle rewrite |
+| Variables Supabase configurées | **Validé** | Injection Production et Preview dans Vercel |
+| Supabase Auth en production | **Validé** | Site URL et Redirect URLs conformes |
+| Recette des 10 points validée | **Validé** | Testé avec succès sur smartphone en 4G |
+| Tag officiel posé | **Validé** | `v1.0-web` posé sur `main` et poussé sur GitHub |
