@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rapport Lab 10 - DAWM - Mansour NIASS</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    :root {
+      --primary: #064e3b;
+      --primary-light: #047857;
+      --accent: #d97706;
+      --accent-light: #fef3c7;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #e2e8f0;
+      --code-bg: #111827;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text);
+      background-color: var(--bg);
+      line-height: 1.6;
+      font-size: 13.5px;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 18mm 20mm;
+      margin: 8mm auto;
+      background: var(--surface);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+      position: relative;
+    }
+
+    @media print {
+      body { background: transparent; }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        width: 100%;
+        min-height: 100vh;
+        padding: 15mm 20mm;
+      }
+    }
+
+    .cover-wrapper {
+      min-height: 260mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid #cbd5e1;
+      padding: 16mm;
+      position: relative;
+      background: #ffffff;
+    }
+    .cover-wrapper::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 6px;
+      background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
+    }
+
+    .inst-header {
+      text-align: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .inst-header .rep { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; color: #64748b; }
+    .inst-header .univ { font-size: 13px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-top: 3px; }
+    .inst-header .dept { font-size: 11px; color: #334155; margin-top: 2px; }
+    .inst-header .master { font-size: 11px; font-weight: 700; color: var(--primary-light); margin-top: 4px; }
+
+    .hero-banner {
+      margin: 25px 0;
+      padding: 26px 20px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .type-pill {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 3px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .hero-banner h1 {
+      font-size: 21px;
+      color: #064e3b;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .hero-banner h2 {
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+    }
+    .tag-container {
+      margin-top: 14px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .tag-chip {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+    }
+    .meta-table td {
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      font-size: 11.5px;
+    }
+    .meta-label {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--primary);
+      width: 32%;
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+    .meta-value {
+      color: #1e293b;
+      font-weight: 500;
+    }
+
+    .cover-bottom {
+      text-align: center;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+    }
+
+    h2.sec-heading {
+      font-size: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 18px 0 10px;
+      padding-bottom: 4px;
+      border-bottom: 2px solid #bbf7d0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    p { margin-bottom: 8px; text-align: justify; }
+
+    .terminal-box {
+      background: var(--code-bg);
+      border-radius: 6px;
+      margin: 12px 0;
+      overflow: hidden;
+      border: 1px solid #374151;
+    }
+    .terminal-header {
+      background: #1f2937;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .t-dots { display: flex; gap: 5px; }
+    .t-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .t-title { font-size: 10.5px; color: #9ca3af; font-family: 'JetBrains Mono', monospace; }
+    .terminal-content {
+      padding: 10px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #f3f4f6;
+      line-height: 1.5;
+    }
+    .cmd { color: #6ee7b7; font-weight: 600; }
+    .out { color: #d1d5db; }
+    .success { color: #34d399; font-weight: 600; }
+
+    /* PHONE CARDS */
+    .phone-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 14px 0;
+    }
+    .device-frame {
+      background: #ffffff;
+      border: 4px solid #1e293b;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      height: 360px;
+    }
+    .device-bar {
+      background: #064e3b;
+      color: #fff;
+      padding: 6px 8px;
+      font-size: 10.5px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+    }
+    .device-content {
+      flex: 1;
+      padding: 8px;
+      background: #f8fafc;
+      font-size: 9.5px;
+      overflow-y: auto;
+    }
+    .device-tabs {
+      background: #fff;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-around;
+      padding: 5px 0;
+      font-size: 9px;
+      font-weight: 600;
+      color: #64748b;
+    }
+    .tab-highlight { color: #064e3b; font-weight: 700; }
+
+    .mini-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 6px;
+      margin-bottom: 6px;
+    }
+    .mini-badge {
+      display: inline-block;
+      background: #047857;
+      color: #fff;
+      font-size: 7px;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .mini-btn {
+      background: #064e3b;
+      color: #fff;
+      text-align: center;
+      padding: 5px;
+      border-radius: 4px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .mini-input {
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 3px;
+      padding: 4px;
+      margin-bottom: 4px;
+      font-size: 8.5px;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      font-size: 11px;
+    }
+    table.data-table th, table.data-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      text-align: left;
+    }
+    table.data-table th {
+      background: #f0fdf4;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .badge-ok {
+      background: #dcfce7;
+      color: #166534;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 9.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1 : PAGE DE GARDE -->
+  <div class="page">
+    <div class="cover-wrapper">
+      <div class="inst-header">
+        <div class="rep">République du Sénégal</div>
+        <div class="univ">Université Cheikh Anta Diop de Dakar (UCAD)</div>
+        <div class="dept">Faculté des Sciences et Techniques • Département de Mathématiques et Informatique</div>
+        <div class="master">Master 1 Réseaux &amp; Télécommunications (RETEL) — Session 2025/2026</div>
+      </div>
+
+      <div class="hero-banner">
+        <span class="type-pill">Travaux Pratiques Mobile</span>
+        <h1>LAB 10 : CRUD MOBILE COMPLET &amp; AUTHENTIFICATION CONTEXTUELLE</h1>
+        <h2>Intégration React Native, Expo Router et Logique Métier Partagée @senevent/shared</h2>
+        <div class="tag-container">
+          <span class="tag-chip">Jalon : v0.10-mobile-crud</span>
+          <span class="tag-chip">Plateforme : Expo SDK 57</span>
+        </div>
+      </div>
+
+      <table class="meta-table">
+        <tr>
+          <td class="meta-label">Étudiant / Développeur</td>
+          <td class="meta-value"><strong>Mansour NIASS</strong> — M1 RETEL</td>
+        </tr>
+        <tr>
+          <td class="meta-label">Groupe de Projet</td>
+          <td class="meta-value">Équipe SenEvent (Atou DIALLO, Mansour NDIAYE, Khady FALL, Mansour NIASS)</td>
+        </tr>
+        <tr>
+          <td class="meta-label">Module d'Enseignement</td>
+          <td class="meta-value">DAWM : Développement d'Applications Web &amp; Mobile</td>
+        </tr>
+        <tr>
+          <td class="meta-label">Enseignant Responsable</td>
+          <td class="meta-value"><strong>Dr. El Hadji Bassirou TOURE</strong> (Maître de Conférences, DMI/FST)</td>
+        </tr>
+        <tr>
+          <td class="meta-label">Dépôt GitHub Partagé</td>
+          <td class="meta-value"><code>git@github.com:diop777/lab7_Senevent.git</code></td>
+        </tr>
+        <tr>
+          <td class="meta-label">Date d'Évaluation</td>
+          <td class="meta-value">Novembre 2026</td>
+        </tr>
+      </table>
+
+      <div class="cover-bottom">
+        École Doctorale Mathématiques et Informatique • FST / UCAD Dakar
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2 : ARCHITECTURE & CODE -->
+  <div class="page">
+    <h2 class="sec-heading">1. Périmètre Fonctionnel du Lab 10</h2>
+    <p>
+      Le <strong>Lab 10</strong> parachève l'écosystème mobile de <strong>SenEvent</strong> en implémentant l'intégralité du cycle CRUD et l'authentification native. L'objectif pédagogique central consiste à réutiliser fidèlement le package partagé <code>@senevent/shared</code> sans redéfinir aucune requête backend ni appel direct Supabase.
+    </p>
+
+    <h2 class="sec-heading">2. Composants &amp; Mécanismes Mis en Œuvre</h2>
+    <ul>
+      <li><strong>Gestion de l'État Global (Contexte Auth)</strong> : Élimination du prop drilling avec <code>AuthProvider</code> et le hook personnalisé <code>useAuth()</code>.</li>
+      <li><strong>Formulaire Sécurisé Profil</strong> : Gestion du clavier avec <code>KeyboardAvoidingView</code> et formulaires de login/signup exploitant <code>seConnecter()</code> et <code>sInscrire()</code>.</li>
+      <li><strong>Bouton d'Action En-tête</strong> : Composant <code>BoutonAjouter</code> dynamique intégré dans <code>headerRight</code>, visible uniquement sous session active.</li>
+      <li><strong>Écran Nouveau</strong> : Formulaire de création d'événements avec sélection de catégories en chips (<code>concert</code>, <code>expo</code>, <code>conference</code>, etc.).</li>
+      <li><strong>Synchronisation au Focus</strong> : Rafraîchissement automatique des listes au retour d'écran grâce à <code>useFocusEffect</code> et <code>useCallback</code>.</li>
+      <li><strong>Composant Inscription</strong> : Bascule temps réel inscription/désinscription sur la vue détaillée.</li>
+    </ul>
+
+    <h2 class="sec-heading">3. Validation Formelle de l'Architecture</h2>
+    <div class="terminal-box">
+      <div class="terminal-header">
+        <div class="t-dots">
+          <span class="t-dot" style="background:#ef4444;"></span>
+          <span class="t-dot" style="background:#f59e0b;"></span>
+          <span class="t-dot" style="background:#10b981;"></span>
+        </div>
+        <span class="t-title">Contrôle de conformité : 0 appel direct Supabase</span>
+      </div>
+      <div class="terminal-content">
+        <span class="cmd">$ git grep -E "supabase\.from|createClient" apps/mobile</span><br>
+        <span class="success"># Code de retour 1 (aucune occurrence). Architecture 100% découplée !</span><br><br>
+        <span class="cmd">$ test -f apps/mobile/context/AuthContext.js &amp;&amp; echo "VALIDE"</span><br>
+        <span class="out">VALIDE</span>
+      </div>
+    </div>
+
+    <h2 class="sec-heading">4. Journal des Commits Officiels</h2>
+    <div class="terminal-box">
+      <div class="terminal-header">
+        <span class="t-title">Historique v0.9-router..v0.10-mobile-crud</span>
+      </div>
+      <div class="terminal-content">
+        <span class="out">252e98d</span> bouton d'inscription a un evenement sur mobile<br>
+        <span class="out">256d168</span> creation d'evenement mobile + bouton header + refresh au focus<br>
+        <span class="out">0d06d3d</span> ecran Profil : connexion, inscription, deconnexion mobile<br>
+        <span class="out">144045c</span> contexte d'authentification (AuthProvider + useAuth)
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3 : INTERFACES ET VALIDATION -->
+  <div class="page">
+    <h2 class="sec-heading">5. Interfaces Utilisateur Validées sur Smartphone</h2>
+
+    <div class="phone-row">
+      <!-- 1. CATALOGUE -->
+      <div class="device-frame">
+        <div class="device-bar">
+          <span>Evenements</span>
+          <span>+</span>
+        </div>
+        <div class="device-content">
+          <div class="mini-card">
+            <span class="mini-badge">CONCERT</span>
+            <div style="font-weight: 700; color: #064e3b; margin-top: 2px;">Dakar Hip-Hop Live</div>
+            <div style="color: #64748b; font-size: 8px;">CICES Dakar</div>
+            <div style="color: #d97706; font-weight: 700; margin-top: 2px;">3 000 FCFA</div>
+          </div>
+          <div class="mini-card">
+            <span class="mini-badge" style="background: #2563eb;">CONFERENCE</span>
+            <div style="font-weight: 700; color: #064e3b; margin-top: 2px;">Forum Tech M1 RETEL</div>
+            <div style="color: #64748b; font-size: 8px;">UCAD II</div>
+            <div style="color: #d97706; font-weight: 700; margin-top: 2px;">Gratuit</div>
+          </div>
+        </div>
+        <div class="device-tabs">
+          <span class="tab-highlight">📅 Événements</span>
+          <span>👤 Profil</span>
+        </div>
+      </div>
+
+      <!-- 2. NOUVEL EVENT -->
+      <div class="device-frame">
+        <div class="device-bar">
+          <span>Nouvel evenement</span>
+          <span></span>
+        </div>
+        <div class="device-content">
+          <div style="font-weight: 700; color: #064e3b; font-size: 9px;">Titre</div>
+          <div class="mini-input">Hackathon DAWM 2026</div>
+          <div style="font-weight: 700; color: #064e3b; font-size: 9px;">Catégorie</div>
+          <div style="display:flex; gap:3px; margin-bottom:4px;">
+            <span style="border:1px solid #064e3b; background:#064e3b; color:#fff; border-radius:8px; padding:1px 5px; font-size:7px;">atelier</span>
+            <span style="border:1px solid #cbd5e1; border-radius:8px; padding:1px 5px; font-size:7px;">expo</span>
+          </div>
+          <div style="font-weight: 700; color: #064e3b; font-size: 9px;">Lieu</div>
+          <div class="mini-input">DMI, Salle Master</div>
+          <div style="font-weight: 700; color: #064e3b; font-size: 9px;">Prix</div>
+          <div class="mini-input">0</div>
+          <div class="mini-btn">Ajouter l'evenement</div>
+        </div>
+        <div class="device-tabs">
+          <span class="tab-highlight">📅 Événements</span>
+          <span>👤 Profil</span>
+        </div>
+      </div>
+
+      <!-- 3. DETAIL & INSCRIPTION -->
+      <div class="device-frame">
+        <div class="device-bar">
+          <span>Detail</span>
+          <span></span>
+        </div>
+        <div class="device-content">
+          <div style="font-weight: 800; color: #064e3b; font-size: 11px;">Hackathon DAWM 2026</div>
+          <div style="color: #64748b; font-size: 8px; margin-top: 2px;">DMI, Salle Master</div>
+          <div style="color: #d97706; font-weight: 700; font-size: 10px; margin-top: 4px;">Gratuit</div>
+          <div style="margin-top: 20px; background:#f0fdf4; border:1px solid #bbf7d0; padding:8px; border-radius:4px;">
+            <div style="font-size:8px; color:#065f46; font-weight:600;">Statut : Inscrit avec succès</div>
+            <div class="mini-btn" style="background:#d97706; margin-top:5px;">Se desinscrire</div>
+          </div>
+        </div>
+        <div class="device-tabs">
+          <span class="tab-highlight">📅 Événements</span>
+          <span>👤 Profil</span>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="sec-heading">6. Cahier de Recette Technique</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Fonctionnalité Validée</th>
+          <th>Procédure Technique</th>
+          <th>Résultat</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Contexte d'authentification</td>
+          <td><code>AuthProvider</code> avec lecture de session par <code>useAuth()</code></td>
+          <td><span class="badge-ok">CONFORME</span></td>
+        </tr>
+        <tr>
+          <td>Formulaire Profil dynamique</td>
+          <td>Champs contrôlés avec compensation clavier <code>KeyboardAvoidingView</code></td>
+          <td><span class="badge-ok">CONFORME</span></td>
+        </tr>
+        <tr>
+          <td>Bouton d'ajout sous session</td>
+          <td>Accès conditionné par <code>useAuth()</code> sur l'en-tête de catalogue</td>
+          <td><span class="badge-ok">CONFORME</span></td>
+        </tr>
+        <tr>
+          <td>Création &amp; Catégorisation</td>
+          <td>Formulaire de saisie et puces interactives avec validation</td>
+          <td><span class="badge-ok">CONFORME</span></td>
+        </tr>
+        <tr>
+          <td>Rafraîchissement intelligent</td>
+          <td>Actualisation des données au focus avec <code>useFocusEffect</code></td>
+          <td><span class="badge-ok">CONFORME</span></td>
+        </tr>
+        <tr>
+          <td>Composant Inscription</td>
+          <td>Vérification et bascule dynamique inscription/désinscription</td>
+          <td><span class="badge-ok">CONFORME</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

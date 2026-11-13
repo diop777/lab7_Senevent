@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rapport Lab 0 - DAWM - Mansour NIASS</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    :root {
+      --primary: #064e3b;
+      --primary-light: #047857;
+      --accent: #d97706;
+      --accent-light: #fef3c7;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #e2e8f0;
+      --code-bg: #111827;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text);
+      background-color: var(--bg);
+      line-height: 1.6;
+      font-size: 13.5px;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 18mm 20mm;
+      margin: 8mm auto;
+      background: var(--surface);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+      position: relative;
+    }
+
+    @media print {
+      body { background: transparent; }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        width: 100%;
+        min-height: 100vh;
+        padding: 15mm 20mm;
+      }
+    }
+
+    /* PAGE DE GARDE ELEGANTE MANSOUR NIASS */
+    .cover-wrapper {
+      min-height: 260mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid #cbd5e1;
+      padding: 16mm;
+      position: relative;
+      background: #ffffff;
+    }
+    .cover-wrapper::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 6px;
+      background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
+    }
+
+    .inst-header {
+      text-align: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .inst-header .rep { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; color: #64748b; }
+    .inst-header .univ { font-size: 13px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-top: 3px; }
+    .inst-header .dept { font-size: 11px; color: #334155; margin-top: 2px; }
+    .inst-header .master { font-size: 11px; font-weight: 700; color: var(--primary-light); margin-top: 4px; }
+
+    .hero-banner {
+      margin: 25px 0;
+      padding: 26px 20px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .type-pill {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 3px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .hero-banner h1 {
+      font-size: 22px;
+      color: #064e3b;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .hero-banner h2 {
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+    }
+    .tag-container {
+      margin-top: 14px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .tag-chip {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+    }
+    .meta-table td {
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      font-size: 11.5px;
+    }
+    .meta-label {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--primary);
+      width: 32%;
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+    .meta-value {
+      color: #1e293b;
+      font-weight: 500;
+    }
+
+    .cover-bottom {
+      text-align: center;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+    }
+
+    /* SECTIONS */
+    h2.sec-heading {
+      font-size: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 18px 0 10px;
+      padding-bottom: 4px;
+      border-bottom: 2px solid #bbf7d0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    p { margin-bottom: 8px; text-align: justify; }
+
+    /* TERMINAL */
+    .terminal-box {
+      background: var(--code-bg);
+      border-radius: 6px;
+      margin: 12px 0;
+      overflow: hidden;
+      border: 1px solid #374151;
+    }
+    .terminal-header {
+      background: #1f2937;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .t-dots { display: flex; gap: 5px; }
+    .t-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .t-title { font-size: 10.5px; color: #9ca3af; font-family: 'JetBrains Mono', monospace; }
+    .terminal-content {
+      padding: 10px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #f3f4f6;
+      line-height: 1.5;
+    }
+    .cmd { color: #6ee7b7; font-weight: 600; }
+    .out { color: #d1d5db; }
+    .success { color: #34d399; font-weight: 600; }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      font-size: 11px;
+    }
+    table.data-table th, table.data-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      text-align: left;
+    }
+    table.data-table th {
+      background: #f0fdf4;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .badge-ok {
+      background: #dcfce7;
+      color: #166534;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 9.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1 : PAGE DE GARDE OFFICIELLE -->
+  <div class="page">
+    <div class="cover-wrapper">
+      <div class="inst-header">
+        <div class="rep">République du Sénégal</div>
+        <div class="univ">Université Cheikh Anta Diop de Dakar (UCAD)</div>
+        <div class="dept">Faculté des Sciences et Techniques • Département de Mathématiques et Informatique</div>
+        <div class="master">Master 1 Réseaux &amp; Télécommunications (RETEL) — Session 2025/2026</div>
+      </div>
+
+      <div class="hero-banner">
+        <span class="type-pill">Cahier de Travaux Pratiques</span>
+        <h1>LAB 0 : GESTION DE VERSIONS AVEC GIT &amp; GITHUB</h1>
+        <h2>Méthodologie Collaborative en Équipe — Structuration, Branches et Résolution de Conflits</h2>
+        <div class="tag-container">
+          <span class="tag-chip">Jalon : v0-init</span>
+          <span class="tag-chip">Projet : SenEvent Monorepo</span>
+        </div>
+      </div>
+
+      <table class="meta-table">
+        <tr>
+          <td class="meta-label">Étudiant / Développeur</td>
+          <td class="meta-value"><strong>Mansour NIASS</strong> — M1 RETEL</td>
+        </tr>
+        <tr>
+          <td class="meta-label">Groupe de Projet</td>
+          <td class="meta-value">Équipe SenEvent (Atou DIALLO, Mansour NDIAYE, Khady FALL, Mansour NIASS)</td>
+        </tr>
+        <tr>
+          <td class="meta-label">Module d'Enseignement</td>
+          <td class="meta-value">DAWM : Développement d'Applications Web &amp; Mobile</td>
+        </tr>
+        <tr>
+          <td class="meta-label">Enseignant Responsable</td>
+          <td class="meta-value"><strong>Dr. El Hadji Bassirou TOURE</strong> (Maître de Conférences, DMI/FST)</td>
+        </tr>
+        <tr>
+          <td class="meta-label">Dépôt GitHub Partagé</td>
+          <td class="meta-value"><code>git@github.com:diop777/lab7_Senevent.git</code></td>
+        </tr>
+        <tr>
+          <td class="meta-label">Date d'Évaluation</td>
+          <td class="meta-value">Novembre 2026</td>
+        </tr>
+      </table>
+
+      <div class="cover-bottom">
+        École Doctorale Mathématiques et Informatique • FST / UCAD Dakar
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2 : FONDATIONS TECHNIQUES & RÉSULTATS -->
+  <div class="page">
+    <h2 class="sec-heading">1. Contexte &amp; Maîtrise du Workflow Git</h2>
+    <p>
+      Le <strong>Lab 0</strong> conditionne la réussite des développements collaboratifs sur la plateforme <strong>SenEvent</strong>. L'apprentissage de la discipline Git permet de fluidifier la coordination entre développeurs et garantit la traçabilité intégrale du code sans altération mutuelle.
+    </p>
+
+    <h2 class="sec-heading">2. Déploiement du Dossier <code>equipe/</code> &amp; Protection</h2>
+    <p>
+      Le dépôt intègre les profils de développement validés via des revues de code formelles par Pull Request :
+    </p>
+    <ul>
+      <li><strong>Fiches membres</strong> : <code>atou.md</code>, <code>khady.md</code>, <code>mansour.md</code> répertoriant les spécialités et le matériel de test.</li>
+      <li><strong>Sécurisation de la branche <code>main</code></strong> : Verrouillage des commits directs, passage obligatoire par une Pull Request avec relecture et approbation d'un pair.</li>
+      <li><strong>Filtre <code>.gitignore</code> robuste</strong> : Blocage dès le départ des secrets (<code>.env</code>, <code>.env*.local</code>) et des artefacts de compilation (<code>dist/</code>, <code>.expo/</code>, <code>node_modules/</code>).</li>
+    </ul>
+
+    <h2 class="sec-heading">3. Résolution Assistée du Conflit d'Équipe</h2>
+    <p>
+      Une situation de collision a été simulée sur la devise de l'équipe dans <code>README.md</code>. Deux branches ont proposé simultanément des variantes : <em>"Un code, deux écrans"</em> et <em>"Dakar dans la poche"</em>.
+      La résolution en local a permis de retenir la synthèse commune :
+    </p>
+    <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 4px; padding: 6px 12px; font-weight: 600; color: #065f46; font-size: 11px; margin: 8px 0;">
+      Devise : Un code, deux ecrans, Dakar dans la poche
+    </div>
+
+    <!-- TERMINAL CONFLIT & GRAPH -->
+    <div class="terminal-box">
+      <div class="terminal-header">
+        <div class="t-dots">
+          <span class="t-dot" style="background:#ef4444;"></span>
+          <span class="t-dot" style="background:#f59e0b;"></span>
+          <span class="t-dot" style="background:#10b981;"></span>
+        </div>
+        <span class="t-title">git log --oneline --grep="conflit"</span>
+      </div>
+      <div class="terminal-content">
+        <span class="cmd">$ git log --oneline --grep="conflit" v0-init</span><br>
+        <span class="out">0bca3dd</span> <span class="success">resout le conflit sur la devise</span>
+      </div>
+    </div>
+
+    <h2 class="sec-heading">4. Preuves de Validation Côté Enseignant</h2>
+    <div class="terminal-box">
+      <div class="terminal-header">
+        <div class="t-dots">
+          <span class="t-dot" style="background:#ef4444;"></span>
+          <span class="t-dot" style="background:#f59e0b;"></span>
+          <span class="t-dot" style="background:#10b981;"></span>
+        </div>
+        <span class="t-title">Contrôles scriptés enseignant</span>
+      </div>
+      <div class="terminal-content">
+        <span class="cmd">$ git shortlog -sne v0-init</span><br>
+        <span class="out">     6  Ousseynou Diop &lt;...&gt;<br>     3  Khady Fall &lt;...&gt;<br>     2  Atou Diallo &lt;...&gt;<br>     2  Mansour Ndiaye &lt;...&gt;</span><br><br>
+        <span class="cmd">$ git log --merges --oneline v0-init</span><br>
+        <span class="out">edf108d Merge pull request #5 from feature/khady/devise<br>0bca3dd resout le conflit sur la devise<br>431565f Merge pull request #4 from feature/mansour/devise<br>3c5948b Merge pull request #3 from feature/khady/presentation<br>5a885cd Merge pull request #2 from feature/mansour/presentation<br>b2b1750 Merge pull request #1 from feature/atou/presentation</span><br><br>
+        <span class="cmd">$ ls equipe/</span><br>
+        <span class="success">atou.md   khady.md   mansour.md</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3 : GRILLE DE RECETTE & SYNTHÈSE -->
+  <div class="page">
+    <h2 class="sec-heading">5. Graphe Visuel des Fusions Réalisées</h2>
+    <div class="terminal-box">
+      <div class="terminal-header">
+        <span class="t-title">Arborescence Git v0-init</span>
+      </div>
+      <div class="terminal-content" style="font-size: 10px;">
+        *   edf108d (tag: v0-init) Merge pull request #5 from feature/khady/devise<br>
+        |\  <br>
+        | *   0bca3dd resout le conflit sur la devise<br>
+        | |\  <br>
+        | |/  <br>
+        |/|   <br>
+        * |   431565f Merge pull request #4 from feature/mansour/devise<br>
+        |\ \  <br>
+        | * | 45c4d59 propose une devise<br>
+        |/ /  <br>
+        | * 738c85a propose une devise<br>
+        |/  <br>
+        *   3c5948b Merge pull request #3 from feature/khady/presentation<br>
+        |\  <br>
+        | * bdae0fd ajoute la fiche de Khady<br>
+        |/  <br>
+        *   5a885cd Merge pull request #2 from feature/mansour/presentation<br>
+        |\  <br>
+        | * d91716e ajoute la fiche de Mansour<br>
+        |/  <br>
+        *   b2b1750 Merge pull request #1 from feature/atou/presentation<br>
+        |\  <br>
+        | * 190794a ajoute la fiche de Atou<br>
+        |/  <br>
+        * 0fbefae squelette du depot : README et gitignore
+      </div>
+    </div>
+
+    <h2 class="sec-heading">6. Tableau de Recette &amp; Conformité Pédagogique</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Point de Vérification</th>
+          <th>Critère Enseignant</th>
+          <th>État</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Configuration des identités locales</td>
+          <td>Identifiant <code>user.name</code> / <code>user.email</code> cohérent sur les postes</td>
+          <td><span class="badge-ok">VALIDÉ</span></td>
+        </tr>
+        <tr>
+          <td>Authentification SSH</td>
+          <td>Génération de clé <code>ed25519</code> et validation <code>ssh -T</code></td>
+          <td><span class="badge-ok">VALIDÉ</span></td>
+        </tr>
+        <tr>
+          <td>Protection de la branche main</td>
+          <td>Refus du push direct, validation par Pull Request</td>
+          <td><span class="badge-ok">VALIDÉ</span></td>
+        </tr>
+        <tr>
+          <td>Dossier equipe/</td>
+          <td>Fiches de présentation individuelles intégrées par PR</td>
+          <td><span class="badge-ok">VALIDÉ</span></td>
+        </tr>
+        <tr>
+          <td>Gestion de conflit Git</td>
+          <td>Collision volontaire résolue et tracée dans l'historique</td>
+          <td><span class="badge-ok">VALIDÉ</span></td>
+        </tr>
+        <tr>
+          <td>Jalon Git v0-init</td>
+          <td>Tag annoté posé sur main et publié sur le dépôt distant</td>
+          <td><span class="badge-ok">VALIDÉ</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
