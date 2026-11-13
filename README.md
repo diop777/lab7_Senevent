@@ -5,7 +5,7 @@ Plateforme d'evenements culturels de Dakar : une application web (React) et une 
 Projet du cours DAWM, Master 1 RETEL, DMI/FST/UCAD.
 
 ## Equipe
-Voir le dossier `equipe/`.
+Voir le dossier \equipe/\.
 
 ## Devise de l'equipe
-Devise : Dakar dans la poche
+Devise : Un code, deux ecrans, Dakar dans la poche
